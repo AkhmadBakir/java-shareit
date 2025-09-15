@@ -6,14 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.user.model.User;
-
 
 @Setter
 @Getter
 @Builder
 @ToString
-@EqualsAndHashCode(exclude = "owner")
+@EqualsAndHashCode()
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item {
@@ -33,7 +31,7 @@ public class Item {
 
     private Boolean available;
 
-    private User owner;
+    private Long ownerId;
 
     private ItemRequest request;
 

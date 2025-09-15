@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.NewUserAddRequest;
-import ru.practicum.shareit.user.dto.UpdateUserRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -20,18 +18,18 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDto> addUser(@RequestBody NewUserAddRequest newUserAddRequest) {
-        UserDto userDto = userService.addUser(newUserAddRequest);
-        log.info("UserController: добавлен новый пользователь с id = {}", userDto.getId());
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
+        UserDto newUserDto = userService.addUser(userDto);
+        log.info("UserController: добавлен новый пользователь с id = {}", newUserDto.getId());
+        return ResponseEntity.ok(newUserDto);
     }
 
     @PatchMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable(value = "userId") Long userId,
-                                              @RequestBody UpdateUserRequest updateUserRequest) {
-        UserDto userDto = userService.updateUser(userId, updateUserRequest);
-        log.info("UserController: пользователь с id = {} обновлен", userDto.getId());
-        return ResponseEntity.ok(userDto);
+                                              @RequestBody UserDto userDto) {
+        UserDto updateUserDto = userService.updateUser(userId, userDto);
+        log.info("UserController: пользователь с id = {} обновлен", updateUserDto.getId());
+        return ResponseEntity.ok(updateUserDto);
     }
 
     @GetMapping("/{userId}")

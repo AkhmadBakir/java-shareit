@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemAddRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -22,20 +20,20 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<ItemDto> addItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                           @RequestBody NewItemAddRequest newItemAddRequest) {
-        ItemDto itemDto = itemService.addItem(userId, newItemAddRequest);
-        log.info("ItemController: вещь c id = {} добавлена пользователю с id = {}", itemDto.getId(), userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(itemDto);
+                                           @RequestBody ItemDto itemDto) {
+        ItemDto newItemDto = itemService.addItem(userId, itemDto);
+        log.info("ItemController: вещь c id = {} добавлена пользователю с id = {}", newItemDto.getId(), userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newItemDto);
     }
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<ItemDto> updateItem(@PathVariable(value = "itemId") Long itemId,
                                               @RequestHeader("X-Sharer-User-Id") Long userId,
-                                              @RequestBody UpdateItemRequest updateItemRequest) {
+                                              @RequestBody ItemDto itemDto) {
         log.info("ItemController: попытка обновить вещь c id = {} пользователя с id = {} обновлена", itemId, userId);
-        ItemDto itemDto = itemService.updateItem(itemId, userId, updateItemRequest);
-        log.info("ItemController: вещь c id = {} пользователя с id = {} обновлена", itemId, userId);
-        return ResponseEntity.ok(itemDto);
+        ItemDto updateItemDto = itemService.updateItem(itemId, userId, itemDto);
+        log.info("ItemController: вещь c id = {} пользователя с id = {} обновлена", updateItemDto, userId);
+        return ResponseEntity.ok(updateItemDto);
     }
 
     @GetMapping("/{itemId}")

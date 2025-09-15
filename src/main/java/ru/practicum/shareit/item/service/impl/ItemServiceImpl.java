@@ -4,16 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.AccessException;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.dto.NewItemAddRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.util.AppValidation;
 
 import java.util.List;
@@ -25,27 +23,25 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
-    public ItemDto addItem(Long userId, NewItemAddRequest newItemAddRequest) {
-        User owner = userRepository.getUserById(userId);
-        if (owner == null) {
-            throw new NotFoundException("Владелец вещи не найден или не существует");
-        }
-        AppValidation.itemValidator(newItemAddRequest);
-        Item item = itemRepository.addItem(ItemMapper.newItem(newItemAddRequest, owner), owner);
-        log.info("ItemServiceImpl: вещь c id = {} добавлена пользователю с id = {}", item.getId(), userId);
-        return ItemMapper.toItemDto(item);
+    public ItemDto addItem(Long userId, ItemDto itemDto) {
+        User owner = UserMapper.toUser(userService.getUserById(userId));
+        AppValidation.itemValidator(itemDto);
+        Item item = ItemMapper.newItem(itemDto, owner.getId());
+        Item newItem = itemRepository.addItem(item, owner.getId());
+        log.info("ItemServiceImpl: вещь c id = {} добавлена пользователю с id = {}", newItem.getId(), owner.getId());
+        return ItemMapper.toItemDto(newItem);
     }
 
     @Override
-    public ItemDto updateItem(Long itemId, Long userId, UpdateItemRequest updateItemRequest) {
+    public ItemDto updateItem(Long itemId, Long userId, ItemDto itemDto) {
         Item item = itemRepository.getItemById(itemId);
-        if (!userId.equals(item.getOwner().getId())) {
+        if (!userId.equals(item.getOwnerId())) {
             throw new AccessException("изменить вещь может только владелец");
         }
-        ItemMapper.updateItem(item, updateItemRequest);
+        ItemMapper.updateItem(item, itemDto);
         itemRepository.updateItem(item);
         log.info("ItemServiceImpl: вещь c id = {} пользователя с id = {} обновлена", item.getId(), userId);
         return ItemMapper.toItemDto(item);

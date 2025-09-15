@@ -15,4 +15,12 @@ public class UserDto {
 
     private String email;
 
+    public boolean hasName() {
+        return !(name == null || name.isBlank());
+    }
+
+    public boolean hasEmail() {
+        return !(email == null || email.isBlank());
+    }
+
 }

@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.dto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ItemMapper {
@@ -14,7 +13,7 @@ public final class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .owner(item.getOwner())
+                .ownerId(item.getOwnerId())
                 .request(item.getRequest())
                 .build();
     }
@@ -25,36 +24,36 @@ public final class ItemMapper {
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
-                .owner(itemDto.getOwner())
+                .ownerId(itemDto.getOwnerId())
                 .request(itemDto.getRequest())
                 .build();
     }
 
-    public static Item newItem(NewItemAddRequest newItemAddRequest, User owner) {
+    public static Item newItem(ItemDto itemDto, Long ownerId) {
         return Item.builder()
-                .name(newItemAddRequest.getName())
-                .description(newItemAddRequest.getDescription())
-                .available(newItemAddRequest.getAvailable())
-                .owner(owner)
-                .request(newItemAddRequest.getRequest())
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .ownerId(ownerId)
+                .request(itemDto.getRequest())
                 .build();
     }
 
-    public static void updateItem(Item item, UpdateItemRequest updateItemRequest) {
-        if (updateItemRequest.hasName()) {
-            item.setName(updateItemRequest.getName());
+    public static void updateItem(Item item, ItemDto itemDto) {
+        if (itemDto.hasName()) {
+            item.setName(itemDto.getName());
         }
-        if (updateItemRequest.hasDescription()) {
-            item.setDescription(updateItemRequest.getDescription());
+        if (itemDto.hasDescription()) {
+            item.setDescription(itemDto.getDescription());
         }
-        if (updateItemRequest.hasAvailableStatus()) {
-            item.setAvailable(updateItemRequest.getAvailable());
+        if (itemDto.hasAvailableStatus()) {
+            item.setAvailable(itemDto.getAvailable());
         }
-        if (updateItemRequest.hasOwner()) {
-            item.setOwner(updateItemRequest.getOwner());
+        if (itemDto.hasOwner()) {
+            item.setOwnerId(itemDto.getOwnerId());
         }
-        if (updateItemRequest.hasRequest()) {
-            item.setRequest(updateItemRequest.getRequest());
+        if (itemDto.hasRequest()) {
+            item.setRequest(itemDto.getRequest());
         }
     }
 

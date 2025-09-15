@@ -23,19 +23,19 @@ public final class UserMapper {
         );
     }
 
-    public static User newUser(NewUserAddRequest newUserAddRequest) {
+    public static User newUser(UserDto userDto) {
         User user = new User();
-        user.setName(newUserAddRequest.getName());
-        user.setEmail(newUserAddRequest.getEmail());
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
         return user;
     }
 
-    public static void updateUser(User user, UpdateUserRequest updateUserRequest) {
-        if (updateUserRequest.hasEmail()) {
-            user.setEmail(updateUserRequest.getEmail());
+    public static void updateUser(User user, UserDto userDto) {
+        if (userDto.hasEmail()) {
+            user.setEmail(userDto.getEmail());
         }
-        if (updateUserRequest.hasName()) {
-            user.setName(updateUserRequest.getName());
+        if (userDto.hasName()) {
+            user.setName(userDto.getName());
         }
     }
 

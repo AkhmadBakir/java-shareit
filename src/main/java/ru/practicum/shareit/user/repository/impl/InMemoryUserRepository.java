@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -25,7 +24,7 @@ public class InMemoryUserRepository implements UserRepository {
     public User addUser(User user) {
         List<String> usersEmails = users.values().stream()
                 .map(User::getEmail)
-                .collect(Collectors.toList());
+                .toList();
         if (usersEmails.contains(user.getEmail())) {
             throw new ValidationException("пользователь с такой электронной почтой " + user.getEmail()
                     + " уже существует");

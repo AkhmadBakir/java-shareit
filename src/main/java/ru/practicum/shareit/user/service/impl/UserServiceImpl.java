@@ -3,9 +3,8 @@ package ru.practicum.shareit.user.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.dto.NewUserAddRequest;
-import ru.practicum.shareit.user.dto.UpdateUserRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -23,17 +22,17 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto addUser(NewUserAddRequest newUserAddRequest) {
-        AppValidation.userValidator(newUserAddRequest);
-        User user = userRepository.addUser(UserMapper.newUser(newUserAddRequest));
+    public UserDto addUser(UserDto userDto) {
+        AppValidation.userValidator(userDto);
+        User user = userRepository.addUser(UserMapper.newUser(userDto));
         log.info("UserServiceImpl: добавлен новый пользователь с id = {}", user.getId());
         return UserMapper.toUserDto(user);
     }
 
     @Override
-    public UserDto updateUser(Long userId, UpdateUserRequest updateUserRequest) {
+    public UserDto updateUser(Long userId, UserDto userDto) {
         User user = userRepository.getUserById(userId);
-        UserMapper.updateUser(user, updateUserRequest);
+        UserMapper.updateUser(user, userDto);
         userRepository.updateUser(user);
         log.info("UserServiceImpl: пользователь с id = {} обновлен", user.getId());
         return UserMapper.toUserDto(user);
@@ -42,6 +41,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Long userId) {
         User user = userRepository.getUserById(userId);
+        if (user == null) {
+            throw new NotFoundException("Владелец вещи не найден или не существует");
+        }
         log.info("UserServiceImpl: получение пользователя с id = {}", user.getId());
         return UserMapper.toUserDto(user);
     }

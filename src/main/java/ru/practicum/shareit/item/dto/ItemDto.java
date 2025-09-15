@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.user.model.User;
 
 @Data
 @Builder
@@ -21,8 +20,28 @@ public class ItemDto {
 
     private Boolean available;
 
-    private User owner;
+    private Long ownerId;
 
     private ItemRequest request;
+
+    public boolean hasName() {
+        return !(name == null || name.isBlank());
+    }
+
+    public boolean hasDescription() {
+        return !(description == null || description.isBlank());
+    }
+
+    public boolean hasAvailableStatus() {
+        return available != null;
+    }
+
+    public boolean hasOwner() {
+        return ownerId != null;
+    }
+
+    public boolean hasRequest() {
+        return request != null;
+    }
 
 }

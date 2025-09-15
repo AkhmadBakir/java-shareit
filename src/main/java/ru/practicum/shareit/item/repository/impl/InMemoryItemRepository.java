@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,11 +18,11 @@ public class InMemoryItemRepository implements ItemRepository {
     private Long identifier = 0L;
 
     @Override
-    public Item addItem(Item item, User owner) {
-        item.setOwner(owner);
+    public Item addItem(Item item, Long ownerId) {
+        item.setOwnerId(ownerId);
         item.setId(getIdentifier());
         items.put(identifier, item);
-        log.info("InMemoryItemRepository: вещь c id = {} добавлена пользователю с id = {}", item.getId(), owner.getId());
+        log.info("InMemoryItemRepository: вещь c id = {} добавлена пользователю с id = {}", item.getId(), ownerId);
         return items.get(identifier);
     }
 
@@ -38,15 +37,15 @@ public class InMemoryItemRepository implements ItemRepository {
     public List<Item> getItemsByUserId(Long userId) {
         log.info("InMemoryItemRepository: получение списка вещей пользователя с id = {}", userId);
         return items.values().stream()
-                .filter(item -> item.getOwner() != null &&
-                        item.getOwner().getId().equals(userId))
+                .filter(item -> item.getOwnerId() != null &&
+                        item.getOwnerId().equals(userId))
                 .collect(Collectors.toList());
     }
 
     @Override
     public void updateItem(Item item) {
         items.put(item.getId(), item);
-        log.info("InMemoryItemRepository: вещь c id = {} пользователя с id = {} обновлена", item.getId(), item.getOwner().getId());
+        log.info("InMemoryItemRepository: вещь c id = {} пользователя с id = {} обновлена", item.getId(), item.getOwnerId());
     }
 
     @Override
