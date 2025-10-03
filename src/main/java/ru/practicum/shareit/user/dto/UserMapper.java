@@ -15,14 +15,6 @@ public final class UserMapper {
         );
     }
 
-    public static User toUser(UserDto itemDto) {
-        return new User(
-                itemDto.getId(),
-                itemDto.getName(),
-                itemDto.getEmail()
-        );
-    }
-
     public static User newUser(UserDto userDto) {
         User user = new User();
         user.setName(userDto.getName());

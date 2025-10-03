@@ -24,33 +24,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto addUser(UserDto userDto) {
         AppValidation.userValidator(userDto);
-        User user = userRepository.addUser(UserMapper.newUser(userDto));
+        User user = userRepository.save(UserMapper.newUser(userDto));
         log.info("UserServiceImpl: добавлен новый пользователь с id = {}", user.getId());
         return UserMapper.toUserDto(user);
     }
 
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
-        User user = userRepository.getUserById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("UserServiceImpl: пользователь с id = " + userId + " не найден"));
         UserMapper.updateUser(user, userDto);
-        userRepository.updateUser(user);
-        log.info("UserServiceImpl: пользователь с id = {} обновлен", user.getId());
-        return UserMapper.toUserDto(user);
+        User updateUser = userRepository.save(user);
+        log.info("UserServiceImpl: пользователь с id = {} обновлен", updateUser.getId());
+        return UserMapper.toUserDto(updateUser);
     }
 
     @Override
-    public UserDto getUserById(Long userId) {
-        User user = userRepository.getUserById(userId);
-        if (user == null) {
-            throw new NotFoundException("Владелец вещи не найден или не существует");
-        }
+    public UserDto getUserDtoById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("UserServiceImpl: пользователь с id = " + userId + " не найден"));
         log.info("UserServiceImpl: получение пользователя с id = {}", user.getId());
         return UserMapper.toUserDto(user);
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<User> allUsers = userRepository.getAllUsers();
+        List<User> allUsers = userRepository.findAll(); //TODO переделать с использованием пагинации
         log.info("UserServiceImpl: получение списка всех пользователей, количество пользователей = {}", allUsers.size());
         return allUsers.stream()
                 .map(UserMapper::toUserDto)
@@ -58,8 +57,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("UserServiceImpl: пользователь с id = " + userId + " не найден"));
+    }
+
+    @Override
     public void deleteUser(Long userId) {
-        userRepository.deleteUser(userId);
+        userRepository.deleteById(userId);
         log.info("UserServiceImpl: удаление пользователя с id = {}", userId);
     }
 

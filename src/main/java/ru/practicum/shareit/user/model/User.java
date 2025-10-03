@@ -1,24 +1,41 @@
 package ru.practicum.shareit.user.model;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import ru.practicum.shareit.item.model.Item;
 
-@Data
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "users")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Email
     @NotBlank
-    @NotEmpty
-    @NotNull
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "owner",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    List<Item> items = new ArrayList<>();
 
 }
