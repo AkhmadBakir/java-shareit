@@ -6,34 +6,37 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @Builder
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name = "comments")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
+    @Column(name = "comment_id")
     private Long id;
-
-    @NotBlank
-    @Column(name = "name", nullable = false)
-    private String name;
 
     @Size(max = 200)
     @NotBlank
-    @Column(name = "description", nullable = false)
-    private String description;
-
-    @Column(name = "is_available", nullable = false)
-    private Boolean available;
+    @Column(name = "text")
+    private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User owner;
+    private User author;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @Column(name = "created")
+    private LocalDateTime created;
 
 }

@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.dto.UserDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -20,9 +23,9 @@ public class ItemDto {
 
     private Boolean available;
 
-    private Long ownerId;
+    private UserDto owner;
 
-    private ItemRequest request;
+    private List<CommentDto> comments = new ArrayList<>();
 
     public boolean hasName() {
         return !(name == null || name.isBlank());
@@ -34,14 +37,6 @@ public class ItemDto {
 
     public boolean hasAvailableStatus() {
         return available != null;
-    }
-
-    public boolean hasOwner() {
-        return ownerId != null;
-    }
-
-    public boolean hasRequest() {
-        return request != null;
     }
 
 }
